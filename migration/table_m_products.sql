@@ -1,0 +1,17 @@
+CREATE TABLE m_products (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    product_name VARCHAR(100) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    quantity INT NOT NULL,
+    price INT NOT NULL,
+    user_id INT NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL,
+    INDEX (id),
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE m_products
+ADD CONSTRAINT FK_UserProduct FOREIGN KEY (user_id) REFERENCES m_users(id);

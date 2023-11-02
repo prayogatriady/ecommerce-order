@@ -1,0 +1,19 @@
+CREATE TABLE m_users (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    user_name VARCHAR(20) NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    password VARCHAR(1000) NOT NULL,
+    role_id INT NOT NULL,
+    balance INT NOT NULL DEFAULT 0,
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    is_active BOOLEAN NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL,
+    INDEX (id),
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE m_users
+ADD CONSTRAINT FK_RoleUser FOREIGN KEY (role_id) REFERENCES m_roles(id);

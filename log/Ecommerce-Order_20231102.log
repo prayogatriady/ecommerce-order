@@ -1,0 +1,5 @@
+time="2023-11-02T14:54:44+07:00" level=error msg="Error 1049 (42000): Unknown database 'ecommerc'"
+time="2023-11-02T14:55:09+07:00" level=fatal msg="Error 1049 (42000): Unknown database 'ecommerc'"
+time="2023-11-02T14:55:26+07:00" level=panic msg="Error 1049 (42000): Unknown database 'ecommerc'"
+time="2023-11-02T14:55:43+07:00" level=fatal msg="Error 1049 (42000): Unknown database 'ecommerc'"
+time="2023-11-02T14:55:56+07:00" level=error msg="Error 1049 (42000): Unknown database 'ecommerc'"
