@@ -1,7 +1,7 @@
 CREATE TABLE m_vouchers (
     id BIGINT NOT NULL AUTO_INCREMENT,
     description VARCHAR(1000) NOT NULL,
-    min_price INT NOT NULL,
+    min_price BIGINT NOT NULL,
     quantity_all INT NOT NULL,
     quantity_user INT NOT NULL,
     expired_at TIMESTAMP NOT NULL,

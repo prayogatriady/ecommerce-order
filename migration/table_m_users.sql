@@ -1,10 +1,10 @@
 CREATE TABLE m_users (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    user_name VARCHAR(20) NOT NULL,
+    username VARCHAR(20) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     password VARCHAR(1000) NOT NULL,
-    role_id INT NOT NULL,
-    balance INT NOT NULL DEFAULT 0,
+    role_id BIGINT NOT NULL,
+    balance BIGINT NOT NULL DEFAULT 0,
     email VARCHAR(100),
     phone VARCHAR(20),
     is_active BOOLEAN NOT NULL DEFAULT 0,
@@ -16,4 +16,4 @@ CREATE TABLE m_users (
 );
 
 ALTER TABLE m_users
-ADD CONSTRAINT FK_RoleUser FOREIGN KEY (role_id) REFERENCES m_roles(id);
+ADD CONSTRAINT FK_Roles_Users FOREIGN KEY (role_id) REFERENCES m_roles(id);
