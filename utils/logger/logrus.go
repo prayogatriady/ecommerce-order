@@ -24,6 +24,8 @@ func InitLogger() {
 
 	loc, _ := time.LoadLocation(env.App.Timezone)
 
+	go dailyLog(loc)
+
 	InitLogrus(loc)
 
 }
