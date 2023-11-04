@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-
-	"github.com/prayogatriady/ecommerce-order/utils/constant"
 )
 
 type EnvVal struct {
@@ -37,12 +35,12 @@ type MySql struct {
 
 var Env *EnvVal
 
-func init() {
+// func init() {
 
-	env := InitEnv(constant.DIR_ENV)
-	Env = env
+// 	env := InitEnv(constant.DIR_ENV)
+// 	Env = env
 
-}
+// }
 
 func InitEnv(dir string) *EnvVal {
 

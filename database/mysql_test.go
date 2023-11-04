@@ -1,29 +1,26 @@
 package database
 
 import (
-	"fmt"
+	"log"
+	"os"
 	"testing"
 
-	"github.com/prayogatriady/ecommerce-order/utils/config"
-	"github.com/prayogatriady/ecommerce-order/utils/constant"
+	configM "github.com/prayogatriady/ecommerce-module/config"
 	"github.com/stretchr/testify/assert"
-)
-
-var (
-	env *config.EnvVal
 )
 
 func TestMain(m *testing.M) {
 
-	dir := fmt.Sprintf("../%s", constant.DIR_ENV)
-	env = config.InitEnv(dir)
+	if err := configM.NewConfig(os.Getenv("APP_ENV"), "../"); err != nil {
+		log.Fatal(err)
+	}
 
 	m.Run()
 }
 
 func Test_InitMysql(t *testing.T) {
 
-	db, err := InitMysql(env)
+	db, err := InitMysqlNew()
 	assert.NotNil(t, db)
 	assert.Nil(t, err)
 

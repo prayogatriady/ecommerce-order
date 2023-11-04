@@ -6,23 +6,27 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/prayogatriady/ecommerce-order/utils/config"
+	configM "github.com/prayogatriady/ecommerce-module/config"
 	"github.com/prayogatriady/ecommerce-order/utils/constant"
 	"github.com/sirupsen/logrus"
 )
 
 var (
-	env    = config.Env
+	appName  = configM.String("app.name", "")
+	tz       = configM.String("app.timezone", "")
+	logDir   = configM.String("logger.dir", "")
+	logLevel = configM.String("logger.level", "")
+
 	Logger *logrus.Logger
 )
 
 func InitLogger() {
 
-	if _, err := os.Stat(env.Logger.Dir); os.IsNotExist(err) {
-		os.Mkdir(env.Logger.Dir, os.ModePerm)
+	if _, err := os.Stat(logDir); os.IsNotExist(err) {
+		os.Mkdir(logDir, os.ModePerm)
 	}
 
-	loc, _ := time.LoadLocation(env.App.Timezone)
+	loc, _ := time.LoadLocation(tz)
 
 	go dailyLog(loc)
 
@@ -54,8 +58,8 @@ func InitLogrus(loc *time.Location) {
 
 	currentDate := time.Now().In(loc).Format(constant.YYYYMMDD)
 
-	logFilename := fmt.Sprintf("%s_%s.log", env.App.Name, currentDate)
-	logFullDir := filepath.Join(env.Logger.Dir, logFilename)
+	logFilename := fmt.Sprintf("%s_%s.log", appName, currentDate)
+	logFullDir := filepath.Join(logDir, logFilename)
 	logFile, err := os.OpenFile(logFullDir, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Printf("Error opening log file: %v\n", err)
@@ -74,5 +78,5 @@ func InitLogrus(loc *time.Location) {
 		"panic": logrus.PanicLevel,
 	}
 
-	Logger.SetLevel(levelMap[env.Logger.Level])
+	Logger.SetLevel(levelMap[logLevel])
 }

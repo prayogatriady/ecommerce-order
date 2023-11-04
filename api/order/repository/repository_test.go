@@ -2,28 +2,29 @@ package repository
 
 import (
 	"context"
-	"fmt"
+	"log"
+	"os"
 	"testing"
 	"time"
 
+	configM "github.com/prayogatriady/ecommerce-module/config"
 	"github.com/prayogatriady/ecommerce-module/model"
 	"github.com/prayogatriady/ecommerce-order/database"
-	"github.com/prayogatriady/ecommerce-order/utils/config"
-	"github.com/prayogatriady/ecommerce-order/utils/constant"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 )
 
 var (
-	env *config.EnvVal
-	Db  *gorm.DB
+	Db *gorm.DB
 )
 
 func TestMain(m *testing.M) {
 
-	dir := fmt.Sprintf("../../../%s", constant.DIR_ENV)
-	env = config.InitEnv(dir)
-	db, _ := database.InitMysql(env)
+	if err := configM.NewConfig(os.Getenv("APP_ENV"), "../../../"); err != nil {
+		log.Fatal(err)
+	}
+
+	db, _ := database.InitMysqlNew()
 	Db = db
 
 	m.Run()

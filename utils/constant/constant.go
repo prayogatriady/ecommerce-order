@@ -1,8 +1,6 @@
 package constant
 
 const (
-	DIR_ENV = "env.json"
-
-	// Logger
+	// Format date for logging
 	YYYYMMDD = "20060102"
 )
