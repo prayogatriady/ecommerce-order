@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/prayogatriady/ecommerce-order/api/model"
+	"github.com/prayogatriady/ecommerce-module/model"
 	"github.com/prayogatriady/ecommerce-order/database"
 	"github.com/prayogatriady/ecommerce-order/utils/config"
 	"github.com/prayogatriady/ecommerce-order/utils/constant"

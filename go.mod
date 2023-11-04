@@ -1,6 +1,6 @@
 module github.com/prayogatriady/ecommerce-order
 
-go 1.19
+go 1.21.1
 
 require (
 	github.com/sirupsen/logrus v1.9.3
@@ -15,6 +15,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/prayogatriady/ecommerce-module v1.0.1 // indirect
 	golang.org/x/sys v0.12.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

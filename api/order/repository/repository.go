@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/prayogatriady/ecommerce-order/api/model"
+	"github.com/prayogatriady/ecommerce-module/model"
 	"gorm.io/gorm"
 )
 
