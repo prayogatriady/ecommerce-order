@@ -28,7 +28,7 @@ func main() {
 
 	db, err := database.InitMysqlNew()
 	if err != nil {
-		l.Logger.Fatal(err)
+		l.ELog.Fatal(err)
 	}
 
 	rdb := database.NewRedisClient()

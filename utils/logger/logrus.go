@@ -17,7 +17,8 @@ var (
 	logDir   = configM.String("logger.dir", "")
 	logLevel = configM.String("logger.level", "")
 
-	Logger *logrus.Logger
+	ILog *logrus.Logger
+	ELog *logrus.Logger
 )
 
 func InitLogger() {
@@ -58,15 +59,20 @@ func InitLogrus(loc *time.Location) {
 
 	currentDate := time.Now().In(loc).Format(constant.YYYYMMDD)
 
-	logFilename := fmt.Sprintf("%s_%s.log", appName, currentDate)
-	logFullDir := filepath.Join(logDir, logFilename)
-	logFile, err := os.OpenFile(logFullDir, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	logFilenameInfo := fmt.Sprintf("%s_%s_INFO.log", currentDate, appName)
+	logFilenameError := fmt.Sprintf("%s_%s_ERROR.log", currentDate, appName)
+
+	logFullDirInfo := filepath.Join(logDir, logFilenameInfo)
+	logFullDirError := filepath.Join(logDir, logFilenameError)
+
+	logFileInfo, err := os.OpenFile(logFullDirInfo, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Printf("Error opening log file: %v\n", err)
 	}
-
-	Logger = logrus.New()
-	Logger.SetOutput(logFile)
+	logFileError, err := os.OpenFile(logFullDirError, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		fmt.Printf("Error opening log file: %v\n", err)
+	}
 
 	levelMap := map[string]logrus.Level{
 		"trace": logrus.TraceLevel,
@@ -78,5 +84,11 @@ func InitLogrus(loc *time.Location) {
 		"panic": logrus.PanicLevel,
 	}
 
-	Logger.SetLevel(levelMap[logLevel])
+	ILog = logrus.New()
+	ILog.SetOutput(logFileInfo)
+	ILog.SetLevel(levelMap[logLevel])
+
+	ELog = logrus.New()
+	ELog.SetOutput(logFileError)
+	ELog.SetLevel(levelMap[logLevel])
 }
