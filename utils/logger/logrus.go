@@ -11,23 +11,26 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var (
-	appName  = configM.String("app.name", "")
-	tz       = configM.String("app.timezone", "")
-	logDir   = configM.String("logger.dir", "")
-	logLevel = configM.String("logger.level", "")
+type StandardLogger struct {
+	*logrus.Logger
+}
 
-	ILog *logrus.Logger
-	ELog *logrus.Logger
+var (
+	// appName  = config.Env.App.Name
+	// tz       = config.Env.App.Timezone
+	// logDir   = config.Env.Logger.Dir
+	// logLevel = config.Env.Logger.Level
+
+	Slog *StandardLogger
 )
 
 func InitLogger() {
 
-	if _, err := os.Stat(logDir); os.IsNotExist(err) {
-		os.Mkdir(logDir, os.ModePerm)
+	if _, err := os.Stat(configM.String("logger.dir", "")); os.IsNotExist(err) {
+		os.Mkdir(configM.String("logger.dir", ""), os.ModePerm)
 	}
 
-	loc, _ := time.LoadLocation(tz)
+	loc, _ := time.LoadLocation(configM.String("app.timezone", ""))
 
 	go dailyLog(loc)
 
@@ -58,18 +61,9 @@ func dailyLog(loc *time.Location) {
 func InitLogrus(loc *time.Location) {
 
 	currentDate := time.Now().In(loc).Format(constant.YYYYMMDD)
-
-	logFilenameInfo := fmt.Sprintf("%s_%s_INFO.log", currentDate, appName)
-	logFilenameError := fmt.Sprintf("%s_%s_ERROR.log", currentDate, appName)
-
-	logFullDirInfo := filepath.Join(logDir, logFilenameInfo)
-	logFullDirError := filepath.Join(logDir, logFilenameError)
-
-	logFileInfo, err := os.OpenFile(logFullDirInfo, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		fmt.Printf("Error opening log file: %v\n", err)
-	}
-	logFileError, err := os.OpenFile(logFullDirError, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	logFilename := fmt.Sprintf("%s_%s.log", currentDate, configM.String("app.name", ""))
+	logFullDir := filepath.Join(configM.String("logger.dir", ""), logFilename)
+	logFile, err := os.OpenFile(logFullDir, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Printf("Error opening log file: %v\n", err)
 	}
@@ -84,11 +78,12 @@ func InitLogrus(loc *time.Location) {
 		"panic": logrus.PanicLevel,
 	}
 
-	ILog = logrus.New()
-	ILog.SetOutput(logFileInfo)
-	ILog.SetLevel(levelMap[logLevel])
+	Slog = &StandardLogger{
+		Logger: logrus.New(),
+	}
 
-	ELog = logrus.New()
-	ELog.SetOutput(logFileError)
-	ELog.SetLevel(levelMap[logLevel])
+	Slog.Logger.SetOutput(logFile)
+	Slog.Logger.SetLevel(levelMap[configM.String("logger.level", "")])
+	Slog.Logger.SetFormatter(&logrus.JSONFormatter{})
+	Slog.Logger.SetReportCaller(true)
 }

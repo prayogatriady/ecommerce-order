@@ -18,17 +18,22 @@ import (
 	"github.com/prayogatriady/ecommerce-order/api/router"
 	"github.com/prayogatriady/ecommerce-order/database"
 	l "github.com/prayogatriady/ecommerce-order/utils/logger"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 
-	configM.NewConfig(os.Getenv("APP_ENV"), ".")
+	if err := configM.NewConfig(os.Getenv("APP_ENV"), "."); err != nil {
+		log.Fatal(err)
+	}
 
 	l.InitLogger()
 
 	db, err := database.InitMysqlNew()
 	if err != nil {
-		l.ELog.Fatal(err)
+		l.Slog.WithFields(logrus.Fields{
+			"error": err,
+		}).Fatal("Failed to initialize mysql connection")
 	}
 
 	rdb := database.NewRedisClient()
