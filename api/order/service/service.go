@@ -11,6 +11,8 @@ import (
 	"github.com/prayogatriady/ecommerce-order/api/order/dto"
 	redisRepo "github.com/prayogatriady/ecommerce-order/api/order/redis"
 	"github.com/prayogatriady/ecommerce-order/api/order/repository"
+	l "github.com/prayogatriady/ecommerce-order/utils/logger"
+	"github.com/sirupsen/logrus"
 
 	"github.com/go-redsync/redsync/v4"
 	"github.com/go-redsync/redsync/v4/redis/goredis/v9"
@@ -38,10 +40,16 @@ func (s *orderService) FindOrder(ctx context.Context, orderId int64) (*modelM.Or
 	redisKey := fmt.Sprintf("ORDER_%d", orderId)
 	result, err := s.RedisRepository.Find(ctx, redisKey)
 	if err != nil {
+		l.Slog.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error()
 		return s.OrderRepository.FindOrder(ctx, orderId)
 	}
 
 	if err = json.Unmarshal([]byte(result), &order); err != nil {
+		l.Slog.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error()
 		return nil, err
 	}
 
@@ -61,6 +69,9 @@ func (s *orderService) CreateOrder(ctx context.Context, payload *dto.CreateUserD
 	mutexname := fmt.Sprintf("VOUCHER_%d", payload.VoucherId)
 	mutex := rs.NewMutex(mutexname, redsync.WithExpiry(30*time.Second), redsync.WithRetryDelay(40*time.Second))
 	if err := mutex.Lock(); err != nil {
+		l.Slog.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error()
 		return err
 	}
 	defer func() {
@@ -94,6 +105,9 @@ func (s *orderService) CreateOrder(ctx context.Context, payload *dto.CreateUserD
 	}
 	orderDetail, err := s.OrderRepository.CreateOrderDetail(ctx, &orderDetails)
 	if err != nil {
+		l.Slog.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error()
 		return err
 	}
 	order.OrderDetail = *orderDetail
@@ -101,6 +115,9 @@ func (s *orderService) CreateOrder(ctx context.Context, payload *dto.CreateUserD
 	redisKey := fmt.Sprintf("ORDER_%d", order.ID)
 	orderByte, _ := json.Marshal(order)
 	if err = s.RedisRepository.Create(ctx, redisKey, orderByte); err != nil {
+		l.Slog.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error()
 		return err
 	}
 

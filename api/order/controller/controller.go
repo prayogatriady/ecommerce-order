@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/prayogatriady/ecommerce-order/api/order/dto"
 	"github.com/prayogatriady/ecommerce-order/api/order/service"
+	l "github.com/prayogatriady/ecommerce-order/utils/logger"
+	"github.com/sirupsen/logrus"
 )
 
 type OrderController interface {
@@ -35,6 +37,9 @@ func (oc *orderController) CreateOrder(c *gin.Context) {
 
 	var payload *dto.CreateUserDTO
 	if err := c.ShouldBindJSON(&payload); err != nil {
+		l.Slog.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error()
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -42,13 +47,16 @@ func (oc *orderController) CreateOrder(c *gin.Context) {
 	}
 
 	if err := oc.OrderService.CreateOrder(context.Background(), payload, c.GetHeader("SLEEP")); err != nil {
+		l.Slog.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error()
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusCreated, gin.H{
 		"data": "OK",
 	})
 }
@@ -58,6 +66,9 @@ func (oc *orderController) FindOrder(c *gin.Context) {
 	query := c.Query("orderId")
 	orderId, err := strconv.ParseInt(query, 10, 64)
 	if err != nil {
+		l.Slog.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error()
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -66,6 +77,9 @@ func (oc *orderController) FindOrder(c *gin.Context) {
 
 	order, err := oc.OrderService.FindOrder(context.Background(), orderId)
 	if err != nil {
+		l.Slog.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error()
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
