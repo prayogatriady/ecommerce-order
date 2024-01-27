@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=$GOFILE -destination=./mocks/repository.go
 type OrderRepository interface {
 	FindOrder(ctx context.Context, orderId int64) (*modelM.Order, error)
 	FindOrders(ctx context.Context) (*[]modelM.Order, error)

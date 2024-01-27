@@ -7,6 +7,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+//go:generate mockgen -source=$GOFILE -destination=./mocks/redis.go
 type RedisRepository interface {
 	Create(ctx context.Context, key string, val any) error
 	Find(ctx context.Context, key string) (string, error)
